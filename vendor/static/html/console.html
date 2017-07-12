@@ -64,8 +64,9 @@
 <script>
     $(function () {
         var protocol = (location.protocol === "https:") ? "wss://" : "ws://";
+        host = window.location.host;
         $("#terminal").OpenTerminal({
-            "wsaddr": protocol+"127.0.0.1:10086/ssh?sid={{.}}"
+            "wsaddr": protocol+host+":10086/ssh?sid={{.}}"
         });
     })
 </script>
