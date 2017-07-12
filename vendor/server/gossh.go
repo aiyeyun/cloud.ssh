@@ -2,7 +2,7 @@ package server
 
 import (
 	"golang.org/x/crypto/ssh"
-	"log"
+	"net"
 )
 
 type CloudSSH struct {
@@ -48,18 +48,19 @@ func (cssh *CloudSSH) Connect() (*ssh.Client, ssh.Channel, error) {
 	config := &ssh.ClientConfig{
 		User: cssh.User,
 		Auth: []ssh.AuthMethod{ssh.Password(cssh.Pwd)},
+		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
+			return nil
+		},
 	}
 
 	client, err := ssh.Dial("tcp", cssh.Addr + ":" + cssh.Port, config)
 	if err != nil {
-		log.Println("这1 ", err)
 		return nil, nil, err
 	}
 
 	channel, _, err := client.Conn.OpenChannel("session", nil)
 	if err != nil {
 		client.Close()
-		log.Println("这2 ", err)
 		return nil, nil, err
 	}
 
@@ -91,14 +92,12 @@ func (cssh *CloudSSH) Connect() (*ssh.Client, ssh.Channel, error) {
 	ok, err := channel.SendRequest("pty-req", true, ssh.Marshal(&req))
 	if !ok || err != nil {
 		client.Close()
-		log.Println("这3 ", err)
 		return nil, nil, err
 	}
 
 	ok, err = channel.SendRequest("shell", true, nil)
 	if !ok || err != nil {
 		client.Close()
-		log.Println("这4 ", err)
 		return nil, nil, err
 	}
 
