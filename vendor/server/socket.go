@@ -135,8 +135,6 @@ func onMessages(conn *websocket.Conn, w http.ResponseWriter, r *http.Request)  {
 	client, channel, err := cloudSshConnect(w, r)
 
 	defer func() {
-		channel.Close()
-		client.Close()
 		conn.Close()
 		//清除session
 		sessionId := r.URL.Query().Get("sid")
@@ -158,7 +156,10 @@ func onMessages(conn *websocket.Conn, w http.ResponseWriter, r *http.Request)  {
 	//读取 socket 消息
 	go readSocketMsg(conn, channel, abnormal)
 
-	<-abnormal
+	if <-abnormal {
+		channel.Close()
+		client.Close()
+	}
 }
 
 func cloudSshConnect(w http.ResponseWriter, r *http.Request) (*ssh.Client, ssh.Channel, error) {
