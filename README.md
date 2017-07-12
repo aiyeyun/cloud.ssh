@@ -8,7 +8,10 @@ Installation Guide
 > **Note:**
 
 > - 安装golang 环境
-> - https://github.com/aiyeyuget https://github.com/aiyeyun/cloud.ssh.git
-> - ithub.com/go-ini/ini
+> - go get github.com/aiyeyuget 
+> - go get github.com/go-ini/iub.com/go-ini/ini
+> - go get golang.org/x/crypto/ssh
+> - go get golang.org/x/crypto/ssh
+> - go get github.com/gorilla/websocket
 
 
