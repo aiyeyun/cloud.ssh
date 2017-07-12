@@ -1,4 +1,4 @@
-Welcome to Wen Cloud SSH !
+Welcome to Web Cloud SSH !
 ===================
 
 GitHub https://github.com/aiyeyun/cloud.ssh.git 
@@ -10,7 +10,6 @@ Installation Guide
 > - 安装golang 环境
 > - go get github.com/aiyeyuget 
 > - go get github.com/go-ini/iub.com/go-ini/ini
-> - go get golang.org/x/crypto/ssh
 > - go get golang.org/x/crypto/ssh
 > - go get github.com/gorilla/websocket
 
