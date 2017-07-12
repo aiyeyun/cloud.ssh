@@ -3,6 +3,8 @@ Welcome to Web Cloud SSH !
 
 GitHub https://github.com/aiyeyun/cloud.ssh.git 
 
+演示DEMO http://ssh.aiyeyun.com/
+
 Installation Guide
 -------------
 > **Note:**
