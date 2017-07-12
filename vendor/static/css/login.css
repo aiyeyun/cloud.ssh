@@ -1,0 +1,51 @@
+html,body {
+    height:100%;
+    width:100%
+}
+body {
+    padding:0;
+    margin:0;
+    background:#006bb6 url("/static/image/loginBackground.png") no-repeat center;
+    line-height:100%;
+    display:table;
+    position:relative;
+    margin-top:-40px;
+    min-height:700px;
+    color:rgba(255,255,255,0.7);
+    font-family:"Open Sans","Microsoft YaHei","Hiragino Sans GB","Hiragino Sans GB W3","氓戮庐猫陆炉茅鈥衡€γ┞烩€�","Helvetica Neue",Arial,sans-serif
+}
+body .login_header {
+    display:table-row;
+    position:absolute;
+    width:100%;
+    padding:0;
+    top:55px;
+    left:0
+}
+body .login_header .row {
+    margin:0
+}
+body .login_header span {
+    margin-left:15px;
+    color:#fff;
+    font-size:22px
+}
+body .login_header a {
+    margin-right:15px;
+    color:rgba(255,255,255,0.7)
+}
+body .login_header a:hover {
+    color:#fff
+}
+body .container {
+    display:table-cell;
+    vertical-align:middle;
+    width:100%;
+    margin-top:-40px
+}
+body .container .form-center {
+    max-width:300px;
+    margin:auto;
+    text-align:center
+}
+
