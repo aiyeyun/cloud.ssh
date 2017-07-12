@@ -8,7 +8,6 @@ Installation Guide
 > **Note:**
 
 > - 安装golang 环境
-
 > - cd $GOPATH/src
 > - git clone https://github.com/aiyeyun/cloud.ssh.git
 > - go get golang.org/x/crypto/ssh [需翻墙下载 或 使用以下方式安装 ]
