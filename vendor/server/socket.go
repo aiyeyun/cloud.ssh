@@ -141,6 +141,9 @@ func onMessages(conn *websocket.Conn, w http.ResponseWriter, r *http.Request)  {
 		//清除session
 		sessionId := r.URL.Query().Get("sid")
 		globalSessions.SessionDestroy(w, r, sessionId)
+		if err := recover(); err != "" {
+			log.Println(err)
+		}
 	}()
 
 	if err != nil {
