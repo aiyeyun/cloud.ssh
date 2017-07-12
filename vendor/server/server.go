@@ -10,8 +10,7 @@ func Run()  {
 	Socket()
 }
 
-var globalSessions *session.Manager
+var globalSSHSessions *session.SSHSessionManage
 func init()  {
-	globalSessions, _ = session.NewSessionManager("memory", "cloud.ssh.sid", 3600)
-	go globalSessions.GC()
+	globalSSHSessions, _ = session.NewSSHSessionManage("cloud.ssh.sid")
 }

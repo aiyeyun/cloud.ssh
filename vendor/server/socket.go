@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"unicode/utf8"
 	"golang.org/x/crypto/ssh"
+	"session"
+	"errors"
 )
 
 // Configure the upgrader
@@ -51,15 +53,11 @@ func Socket()  {
 }
 
 func Index(writer http.ResponseWriter, request *http.Request)  {
-	sess := globalSessions.SessionStart(writer, request, "")
-	addr := sess.Get("addr")
-	port := sess.Get("port")
-	username := sess.Get("username")
-	password := sess.Get("password")
-	if addr != nil && port != nil && username != nil && password != nil {
+	sid := globalSSHSessions.Start(writer, request, "")
+	sinfo := session.SSHListManage.Get(sid)
+	if sinfo != nil {
 		http.Redirect(writer, request, "/console", http.StatusFound)
 	}
-
 	query := request.URL.Query()
 	err := query["error"]
 	var err_str string
@@ -89,32 +87,23 @@ func Login(writer http.ResponseWriter, request *http.Request)  {
 		http.Redirect(writer, request, "/?error=" + err.Error(), http.StatusFound)
 	}
 
-	sess := globalSessions.SessionStart(writer, request, "")
-	sess.Set("addr", addr)
-	sess.Set("port", port)
-	sess.Set("username", username)
-	sess.Set("password", password)
+	sid := globalSSHSessions.Start(writer, request, "")
+	sinfo := &session.SSHInfo{Addr: addr, Port: port, Username: username, Password: password}
+	session.SSHListManage.Set(sid, sinfo)
 
 	//跳转
 	http.Redirect(writer, request, "/console", http.StatusFound)
 }
 
 func Logout(writer http.ResponseWriter, request *http.Request)  {
-	globalSessions.SessionDestroy(writer, request, "")
+	//globalSessions.SessionDestroy(writer, request, "")
 	//跳转
 	http.Redirect(writer, request, "/", http.StatusFound)
 }
 
 func Console(writer http.ResponseWriter, request *http.Request)  {
-	sess := globalSessions.SessionStart(writer, request, "")
-	addr := sess.Get("addr")
-	port := sess.Get("port")
-	username := sess.Get("username")
-	password := sess.Get("password")
-	if addr == nil || port == nil || username == nil || password == nil {
-		http.Redirect(writer, request, "/", http.StatusFound)
-	}
-	template.Must(template.ParseFiles(os.Getenv("GOPATH") + "/" + "src/cloud.ssh/vendor/static/html/console.html")).Execute(writer, sess.SessionID())
+	sid := globalSSHSessions.Start(writer, request, "")
+	template.Must(template.ParseFiles(os.Getenv("GOPATH") + "/" + "src/cloud.ssh/vendor/static/html/console.html")).Execute(writer, sid)
 }
 
 // 打开端口连接 监听函数
@@ -133,22 +122,26 @@ func onOpen(w http.ResponseWriter, r *http.Request)  {
 //监听客户端消息
 func onMessages(conn *websocket.Conn, w http.ResponseWriter, r *http.Request)  {
 	client, channel, err := cloudSshConnect(w, r)
-
-	defer func() {
-		//channel.Close()
-		//client.Close()
-		conn.Close()
-		//清除session
-		sessionId := r.URL.Query().Get("sid")
-		globalSessions.SessionDestroy(w, r, sessionId)
-		if err := recover(); err != nil {
-			log.Println(err)
-		}
-	}()
-
 	if err != nil {
+		conn.Close()
+		log.Println(err)
+		sid := r.URL.Query().Get("sid")
+		globalSSHSessions.Destroy(w, r, sid)
+		session.SSHListManage.Del(sid)
 		return
 	}
+
+	defer func(err error) {
+		if err == nil {
+			channel.Close()
+			client.Close()
+			conn.Close()
+		}
+		//清除session
+		sid := r.URL.Query().Get("sid")
+		globalSSHSessions.Destroy(w, r, sid)
+		session.SSHListManage.Del(sid)
+	}(err)
 
 	var abnormal chan bool = make(chan bool, 2)
 
@@ -162,22 +155,20 @@ func onMessages(conn *websocket.Conn, w http.ResponseWriter, r *http.Request)  {
 }
 
 func cloudSshConnect(w http.ResponseWriter, r *http.Request) (*ssh.Client, ssh.Channel, error) {
-	sessionId := r.URL.Query().Get("sid")
+	sid := r.URL.Query().Get("sid")
 	cols := r.URL.Query().Get("cols")
 	rows := r.URL.Query().Get("rows")
-
-	sess := globalSessions.SessionStart(w, r, sessionId)
-	addr := sess.Get("addr").(string)
-	port := sess.Get("port").(string)
-	username := sess.Get("username").(string)
-	password := sess.Get("password").(string)
+	sinfo := session.SSHListManage.Get(sid)
+	if sid == "" || cols == "" || rows == "" || sinfo == nil {
+		return nil, nil, errors.New("Illegal operation")
+	}
 
 	cols_uint64, _ := strconv.ParseUint(cols, 10, 32)
 	rows_uint64, _ := strconv.ParseUint(rows, 10, 32)
 	ptyCols := uint32(cols_uint64)
 	ptyRows := uint32(rows_uint64)
 
-	cloudSSH := &CloudSSH{Addr: addr, Port: port, User: username, Pwd: password, Columns: ptyCols, Rows: ptyRows}
+	cloudSSH := &CloudSSH{Addr: sinfo.Addr, Port: sinfo.Port, User: sinfo.Username, Pwd: sinfo.Password, Columns: ptyCols, Rows: ptyRows}
 	client, channel, err := cloudSSH.Connect()
 	return client, channel, err
 }

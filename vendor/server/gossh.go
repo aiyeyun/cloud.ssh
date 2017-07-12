@@ -91,12 +91,14 @@ func (cssh *CloudSSH) Connect() (*ssh.Client, ssh.Channel, error) {
 
 	ok, err := channel.SendRequest("pty-req", true, ssh.Marshal(&req))
 	if !ok || err != nil {
+		channel.Close()
 		client.Close()
 		return nil, nil, err
 	}
 
 	ok, err = channel.SendRequest("shell", true, nil)
 	if !ok || err != nil {
+		channel.Close()
 		client.Close()
 		return nil, nil, err
 	}
