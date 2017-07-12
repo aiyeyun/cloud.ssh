@@ -51,7 +51,6 @@ func (cssh *CloudSSH) Connect() (*ssh.Client, ssh.Channel, error) {
 
 	client, err := ssh.Dial("tcp", cssh.Addr + ":" + cssh.Port, config)
 	if err != nil {
-		client.Close()
 		return nil, nil, err
 	}
 
