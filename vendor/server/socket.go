@@ -97,6 +97,9 @@ func Login(writer http.ResponseWriter, request *http.Request)  {
 
 func Logout(writer http.ResponseWriter, request *http.Request)  {
 	//globalSessions.SessionDestroy(writer, request, "")
+	sid := globalSSHSessions.Start(writer, request, "")
+	globalSSHSessions.Destroy(writer, request, "")
+	session.SSHListManage.Del(sid)
 	//跳转
 	http.Redirect(writer, request, "/", http.StatusFound)
 }
