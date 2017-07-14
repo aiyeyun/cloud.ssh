@@ -27,4 +27,6 @@ Installation Guide
 > - ./cloud.ssh
 
 
-![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo") 
+Demo
+-------------
+![cloud.ssh.demo](https://raw.githubusercontent.com/aiyeyun/cloud.ssh/master/cloud.ssh.demo.gif "演示DEMO") 
