@@ -29,3 +29,9 @@ Installation Guide
 > - go install
 > - cd $GOPATH/bin/
 > - ./cloud.ssh
+
+Directory Structure
+-------------
+config
+
+    --config.ini 配置端口
