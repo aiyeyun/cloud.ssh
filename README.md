@@ -5,6 +5,10 @@ GitHub https://github.com/aiyeyun/cloud.ssh.git
 
 演示DEMO http://ssh.aiyeyun.com/
 
+Demo
+-------------
+![cloud.ssh.demo](https://raw.githubusercontent.com/aiyeyun/cloud.ssh/master/cloud.ssh.demo.gif "演示DEMO") 
+
 Installation Guide
 -------------
 > **Note:**
@@ -25,8 +29,3 @@ Installation Guide
 > - go install
 > - cd $GOPATH/bin/
 > - ./cloud.ssh
-
-
-Demo
--------------
-![cloud.ssh.demo](https://raw.githubusercontent.com/aiyeyun/cloud.ssh/master/cloud.ssh.demo.gif "演示DEMO") 
