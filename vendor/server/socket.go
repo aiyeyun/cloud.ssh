@@ -141,9 +141,9 @@ func onMessages(conn *websocket.Conn, w http.ResponseWriter, r *http.Request)  {
 			conn.Close()
 		}
 		//清除session
-		sid := r.URL.Query().Get("sid")
-		globalSSHSessions.Destroy(w, r, sid)
-		session.SSHListManage.Del(sid)
+		//sid := r.URL.Query().Get("sid")
+		//globalSSHSessions.Destroy(w, r, sid)
+		//session.SSHListManage.Del(sid)
 	}(err)
 
 	var abnormal chan bool = make(chan bool, 2)
