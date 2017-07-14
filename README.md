@@ -25,3 +25,6 @@ Installation Guide
 > - go install
 > - cd $GOPATH/bin/
 > - ./cloud.ssh
+
+
+![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo") 
